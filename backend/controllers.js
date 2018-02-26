@@ -53,8 +53,7 @@ router.get('/book', (req,res) => {
             if(err) throw err;
             console.log("added: " + people[i] + " to meeting.");
         });
-    }
-
+    }   
 });
 
 router.get('/penis', (req, res) => {
