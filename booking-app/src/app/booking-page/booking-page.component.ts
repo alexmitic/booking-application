@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {BookingsService, Meeting} from '../bookings.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {Booking, BookingsService, Meeting} from '../bookings.service';
 
 @Component({
   selector: 'app-booking-page',
@@ -8,16 +8,18 @@ import {BookingsService, Meeting} from '../bookings.service';
 })
 export class BookingPageComponent implements OnInit {
 
-  meetings: Meeting[];
+  bookings: Booking[];
   participants = ['Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic']
   rooms = ['345', '234'];
 
   constructor(private bookingsService: BookingsService) {
-    this.meetings = bookingsService.meetings;
+    this.bookingsService.reqMeetings().then((data) => {
+      console.log(data);
+      this.bookings = data;
+    });
   }
 
   ngOnInit() {
-    // TODO Get from server
   }
 
   public showParticipants(room) {

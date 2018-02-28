@@ -13,10 +13,19 @@ create table staff (
 
 create table booking (
     booking_id SERIAL,
-    start_time timestamp not null,
-    end_time timestamp not null,
+    date_of_booking date not null, 
+    start_time time not null,
+    end_time time not null,
+    resource_id int not null,
+    made_by int not null,
     primary key(booking_id)
 );
+
+create table meeting (
+    booking_id int not null,
+    participant int not null
+);
+
 create table people (
     person_id serial,
     full_name text not null,
@@ -43,15 +52,6 @@ create table teams (
 create table team_member (
     team_id int not null,
     person_id int not null
-);
-
-create table meeting (
-    meeting_id SERIAL,
-    made_by int not null,
-    booking_id int not null,
-    resource_id int not null,
-    participant int not null,
-    primary key(meeting_id)
 );
 
 --answer what rooms are available in given timeslot

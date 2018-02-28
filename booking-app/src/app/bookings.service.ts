@@ -1,22 +1,40 @@
 import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
-export class Meeting {
-  constructor(date: string,
+export class Booking {
+  constructor(booking_id: number,
+              date: string,
               from: string,
               to: string,
               room: string) {
   }
 }
 
+export class Participants {
+  constructor(full_name: string) {
+  }
+}
+
+export class Person {
+  constructor(public person_id: number,
+              public full_name: string) {
+  }
+}
+
 @Injectable()
 export class BookingsService {
 
-  public meetings: Meeting[] = [{date: '2017-01-01', from: '11:00', to: '12:00', room: '345'},
-    {date: '2017-01-01', from: '11:00', to: '12:00', room: '346'},
-    {date: '2017-01-01', from: '11:00', to: '12:00', room: '347'},
-    {date: '2017-01-01', from: '11:00', to: '12:00', room: '348'},
-    {date: '2017-01-01', from: '11:00', to: '12:00', room: '349'},
-    {date: '2017-01-01', from: '11:00', to: '12:00', room: '350'}];
+  public bookings: Booking[];
+  public personId: number;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  public reqMeetings(): Promise<Booking[]> {
+    return new Promise((resolve, reject) => {
+      const URL = 'http://localhost:3000/getbookings?person_id=' + this.personId;
+      this.http.get(URL, { responseType: 'json' }).subscribe((response) => {
+        resolve(response as Booking[]);
+      });
+    });
+  }
 }

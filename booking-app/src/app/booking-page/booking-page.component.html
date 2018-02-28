@@ -1,15 +1,15 @@
 <div class="row" id="booking">
   <div class="col-md-8 meeting-box">
-    <div *ngFor="let meeting of meetings" class="meeting" (click)="showParticipants(meeting.room)">
+    <div *ngFor="let booking of bookings" class="meeting" (click)="showParticipants(meeting.room)">
       <div class="row meeting-row">
         <div class="col-md-6">
-          <h6>Date: {{ meeting.date }}</h6>
-          <h6>From: {{ meeting.from }}</h6>
+          <h6>Date: {{ booking.date.substring(0, 10) }}</h6>
+          <h6>From: {{ booking.from }}</h6>
         </div>
 
         <div class="col-md-6">
-          <h6>Room: {{ meeting.room }}</h6>
-          <h6>To: {{ meeting.to }}</h6>
+          <h6>Room: {{ booking.room }}</h6>
+          <h6>To: {{ booking.to }}</h6>
         </div>
       </div>
     </div>

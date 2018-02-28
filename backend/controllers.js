@@ -3,31 +3,53 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var db = require('./db'); 
+const argon2 = require('argon2');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-
-const argon2 = require('argon2');
-
- 
 
 router.get('/', (req, res) => {
     return res.status(200).send("Testetsetstestsetestset");
 });
 
 router.get('/login', (req, res) => {
-    var sql = "select full_name,hashed_password from people where email='".concat(req.query.email).concat("';")
-    console.log(sql);
-    db.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log(result.length);
-        argon2.verify(result[0].hashed_password,req.query.password).then (match => {
-            if(match){
-                console.log("authenticated");
-                return res.status(200).send("SUCC");
+    var sql = "select full_name, hashed_password, person_id from people where email='".concat(req.query.email).concat("';")
+    db.getConnection((err, con) => {
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+
+            if (result.length !== 0) {
+                argon2.verify(result[0].hashed_password,req.query.password).then (match => {
+                    con.release()
+                    if(match){
+                        return res.status(200).send(result[0]);
+                    } else {
+                        return res.status(200).send("FAIL");
+                    }
+                });
             } else {
                 return res.status(200).send("FAIL");
             }
+        });
+    });
+});
+
+router.get('/getbookings', (req, res) => {
+    let respons = [];
+    db.getConnection((err, connction) => {
+        const allPersonBookingsSQL = 'SELECT booking.booking_id, date_of_booking, start_time, end_time, room FROM booking INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE made_by = ' + req.query.person_id + ';';
+        connction.query(allPersonBookingsSQL, (err, bookings) => {
+            for (let i = 0; i < bookings.length; i++) {
+                respons.push({
+                    booking_id: bookings[i].booking_id,
+                    date: bookings[i].date_of_booking, 
+                    from: bookings[i].start_time,
+                    to: bookings[i].end_time,
+                    room: bookings[i].room
+                });  
+            }
+            connction.release()
+            return res.status(200).send(respons);
         });
     });
 });
@@ -58,7 +80,7 @@ router.get('/book', (req,res) => {
 
 router.get('/penis', (req, res) => {
     argon2.hash('password').then(hash => {
-        var sql1 = "insert into people (person_id, full_name, email, hashed_password) values (1, 'oskar', 'email','";
+        var sql1 = "insert into people (person_id, full_name, email, hashed_password) values (2, 'Oskar Nehlin', 'onehlin@kth.se','";
         var sql2 = "');"
         console.log(hash);
         hash = hash.concat(sql2);
