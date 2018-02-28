@@ -10,6 +10,7 @@ export class BookingPageComponent implements OnInit {
 
   meetings: Meeting[];
   participants = ['Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic']
+  rooms = ['345', '234'];
 
   constructor(private bookingsService: BookingsService) {
     this.meetings = bookingsService.meetings;

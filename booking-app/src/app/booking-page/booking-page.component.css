@@ -5,7 +5,7 @@
   -moz-box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
   box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
 
-  margin-top: 25vh;
+  margin-top: 2.5vh;
   margin-left: 20vw;
 }
 
@@ -82,4 +82,25 @@
 
 #newMeetingButton:hover {
   transform: scale(1.05);
+}
+
+.book-meeting {
+  width: 40vw;
+  height: 40vh;
+
+  margin-left: 20vw;
+
+  border-left: 1px dashed black;
+  border-right: 1px dashed black;
+  border-bottom: 1px dashed black;
+}
+
+.attributes-box {
+  height: 20%;
+  /*background-color: #FC6620;*/
+}
+
+.dropdown {
+  background-color: transparent;
+  border: none;
 }
