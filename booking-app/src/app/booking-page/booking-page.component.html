@@ -1,6 +1,6 @@
 <div class="row" id="booking">
   <div class="col-md-8 meeting-box">
-    <div *ngFor="let booking of bookings" class="meeting" (click)="showParticipants(meeting.room)">
+    <div *ngFor="let booking of bookings" class="meeting" (click)="showParticipants(booking.booking_id)">
       <div class="row meeting-row">
         <div class="col-md-6">
           <h6>Date: {{ booking.date.substring(0, 10) }}</h6>
@@ -17,15 +17,24 @@
 
   <div class="col-md-4">
     <div id="informationBox">
-      <button class="btn" id="deleteButton" (click)="deleteMeeting()"> Delete meeting </button>
+      <div class="row" style="width: 100%; height: 20%">
+        <div class="col-md-6" style="background-color: #FC6621">
+          <button class="btn" id="deleteButton" (click)="deleteBooking()">Delete meeting</button>
+        </div>
+
+        <div class="col-md-6">
+          <button class="btn" (click)="refreshBookings()">Reload</button>
+        </div>
+      </div>
       <h5 class="text-center" id="participantsTitle">Participants</h5>
       <div id="participantsBox">
         <h6 *ngFor="let participant of participants" class="text-center" style="height: 20%; border-bottom: 1px dotted black; width: 90%; margin-left: 5%">
-          {{ participant }}
+          {{ participant.full_name }}
         </h6>
       </div>
     </div>
-    <button class="btn" id="newMeetingButton" (click)="deleteMeeting()"> New Meeting </button>
+    <button class="btn" id="newMeetingButton" (click)="deleteBooking()"> New Meeting </button>
+    <button class="btn"  (click)="refreshBookings()"> refresh </button>
   </div>
 </div>
 

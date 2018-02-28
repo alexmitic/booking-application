@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking, BookingsService, Meeting} from '../bookings.service';
+import {Booking, BookingsService, Participants} from '../bookings.service';
 
 @Component({
   selector: 'app-booking-page',
@@ -9,12 +9,11 @@ import {Booking, BookingsService, Meeting} from '../bookings.service';
 export class BookingPageComponent implements OnInit {
 
   bookings: Booking[];
-  participants = ['Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic', 'Aleksandar Mitic']
-  rooms = ['345', '234'];
+  participants: Participants[];
+  currentBookingId: number;
 
   constructor(private bookingsService: BookingsService) {
     this.bookingsService.reqMeetings().then((data) => {
-      console.log(data);
       this.bookings = data;
     });
   }
@@ -22,14 +21,25 @@ export class BookingPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  public showParticipants(room) {
-    // TODO Set current meeting
+  public showParticipants(bookingId) {
     const participantDisplay = document.getElementById('informationBox');
     participantDisplay.style.visibility = 'visible';
+    this.currentBookingId = bookingId;
+
+    this.bookingsService.getParticipants(bookingId).then((data) => {
+      this.participants = data;
+    });
   }
 
-  public deleteMeeting() {
-    // TODO
+  public deleteBooking() {
+    this.bookingsService.deleteBooking(this.currentBookingId);
+  }
+
+  public refreshBookings() {
+    this.bookingsService.reqMeetings().then((data) => {
+      this.bookings = data;
+      console.log(this.bookings);
+    });
   }
 
 }

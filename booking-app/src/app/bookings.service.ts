@@ -23,8 +23,6 @@ export class Person {
 
 @Injectable()
 export class BookingsService {
-
-  public bookings: Booking[];
   public personId: number;
 
   constructor(private http: HttpClient) { }
@@ -35,6 +33,21 @@ export class BookingsService {
       this.http.get(URL, { responseType: 'json' }).subscribe((response) => {
         resolve(response as Booking[]);
       });
+    });
+  }
+
+  public getParticipants(bookingId: number): Promise<Participants[]> {
+    return new Promise((resolve, reject) => {
+      const URL = 'http://localhost:3000/getparticipants?booking_id=' + bookingId;
+      this.http.get(URL, { responseType: 'json' }).subscribe((response) => {
+        resolve(response as Participants[]);
+      });
+    });
+  }
+
+  public deleteBooking(bookingId): void {
+    const URL = 'http://localhost:3000/deletebooking?booking_id=' + bookingId + '&person_id=' + this.personId;
+    this.http.delete(URL, { responseType: 'json' }).subscribe((response) => {
     });
   }
 }

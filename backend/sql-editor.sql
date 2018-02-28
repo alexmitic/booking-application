@@ -112,3 +112,19 @@ with meeting_resource(cost) as (
         meeting.resource_id = resources.resource_id
 )
 select sum(cost) from meeting_resource;
+
+
+-- Get all meetings for a person
+SELECT booking.booking_id, date_of_booking, start_time, end_time, room 
+FROM booking 
+INNER JOIN resources 
+ON booking.resource_id = resources.resource_id 
+WHERE made_by = 1
+UNION
+SELECT meeting.booking_id, date_of_booking, start_time, end_time, room  
+FROM meeting 
+INNER JOIN booking 
+ON meeting.booking_id = booking.booking_id
+INNER JOIN resources 
+ON booking.resource_id = resources.resource_id 
+WHERE participant = 1;

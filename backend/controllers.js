@@ -37,7 +37,8 @@ router.get('/login', (req, res) => {
 router.get('/getbookings', (req, res) => {
     let respons = [];
     db.getConnection((err, connction) => {
-        const allPersonBookingsSQL = 'SELECT booking.booking_id, date_of_booking, start_time, end_time, room FROM booking INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE made_by = ' + req.query.person_id + ';';
+        const allPersonBookingsSQL = 'SELECT booking.booking_id, date_of_booking, start_time, end_time, room FROM booking INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE made_by = ' + req.query.person_id + ' UNION SELECT meeting.booking_id, date_of_booking, start_time, end_time, room FROM meeting INNER JOIN booking ON meeting.booking_id = booking.booking_id INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE participant = ' + req.query.person_id + ';';
+
         connction.query(allPersonBookingsSQL, (err, bookings) => {
             for (let i = 0; i < bookings.length; i++) {
                 respons.push({
@@ -52,6 +53,38 @@ router.get('/getbookings', (req, res) => {
             return res.status(200).send(respons);
         });
     });
+});
+
+router.get('/getparticipants', (req, res) => {
+    db.getConnection((err, connction) => {
+        const allParticipantsSQL = 'select full_name from meeting inner join people on participant = person_id where booking_id = ' + req.query.booking_id + ';';
+
+        connction.query(allParticipantsSQL, (err, participants) => {
+            connction.release()
+            return res.status(200).send(participants);
+        });
+    });
+});
+
+router.delete('/deletebooking', (req, res) => {
+
+    console.log('Im here');
+
+    db.getConnection((err, connction) => {
+        const deleteBookingSQL = 'DELETE FROM booking WHERE booking_id = ' + req.query.booking_id + ' AND made_by = ' + req.query.person_id + ';';
+        connction.query(deleteBookingSQL, (err, participants) => {
+            connction.release()
+        });
+    });
+
+    db.getConnection((err, connction) => {
+        const deleteBookingSQL = 'DELETE FROM meeting WHERE meeting.booking_id IN (SELECT booking_id FROM booking WHERE made_by = ' + req.query.person_id + ' ) AND meeting.booking_id = ' + req.query.booking_id + ';';
+        connction.query(deleteBookingSQL, (err, participants) => {
+            connction.release()
+        });
+    });
+
+    return res.status(200).send("DELETED")
 });
 
 router.get('/book', (req,res) => {
@@ -80,16 +113,19 @@ router.get('/book', (req,res) => {
 
 router.get('/penis', (req, res) => {
     argon2.hash('password').then(hash => {
-        var sql1 = "insert into people (person_id, full_name, email, hashed_password) values (2, 'Oskar Nehlin', 'onehlin@kth.se','";
+        var sql1 = "insert into people (person_id, full_name, email, hashed_password) values (7, 'Peter Svensson', 'peter@kth.se','";
         var sql2 = "');"
         console.log(hash);
         hash = hash.concat(sql2);
         sql1 = sql1.concat(hash);
         console.log(sql1); 
-        db.query(sql1, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-          });
+
+        db.getConnection((err, connction) => {
+            connction.query(sql1, function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted");
+            });
+        });
       }).catch(err => {
         console.log("failed life")
       });
