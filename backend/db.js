@@ -1,20 +1,15 @@
-var mysql      = require('mysql');
-var pool = mysql.createPool({
-        connectionLimit : 100,
-        host     : 'localhost',
-        user     : 'root',
-        password : 'batman',
-        database : 'booking',
-        debug    : false
-});
+const { Pool } = require('pg')
 
-// var connection = mysql.createConnection({
-//   host     : 'localhost',
-//   user     : 'root',
-//   password : 'batman',
-//   database : 'booking'
-// });
- 
-// connection.connect();
+const pool = new Pool({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'postgres',
+  password: 'password',
+})
+
+// pool.query('SELECT * FROM test', (err, res) => {
+//   console.log("Result" + res.rows[0].id)
+//   pool.end()
+// })
 
 module.exports = pool;

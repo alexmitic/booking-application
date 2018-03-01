@@ -74,4 +74,11 @@ export class BookingsService {
       });
     });
   }
+
+  public book(booking): void {
+    const URL = 'http://localhost:3000/book';
+    this.http.post(URL, JSON.stringify(booking), { responseType: 'text' }).subscribe((response) => {
+      console.log(response);
+    });
+  }
 }
