@@ -18,7 +18,7 @@
   <div class="col-md-4">
     <div id="informationBox">
       <div class="row" style="width: 100%; height: 20%">
-        <div class="col-md-6" style="background-color: #FC6621">
+        <div class="col-md-6">
           <button class="btn" id="deleteButton" (click)="deleteBooking()">Delete meeting</button>
         </div>
 
@@ -33,19 +33,18 @@
         </h6>
       </div>
     </div>
-    <button class="btn" id="newMeetingButton" (click)="deleteBooking()"> New Meeting </button>
-    <button class="btn"  (click)="refreshBookings()"> refresh </button>
+    <button class="btn" id="newMeetingButton" (click)="makeBooking()">New Meeting</button>
   </div>
 </div>
 
-<div class="book-meeting row" style="visibility: hidden;">
+<div class="book-meeting row" id="editMeeting" style="visibility: hidden;">
   <div class="col-md-6 attributes-box" style="padding-top: 1.6%;">
     Date: <input id="date" type="date">
   </div>
   <div class="col-md-6 attributes-box" style="padding-top: 1.9%;">
     Room:
    <select class="dropdown" id="room">
-      <option *ngFor="let room of rooms" value={{room}}>{{room}}</option>
+      <option *ngFor="let room of rooms" value={{room.room}}>{{room.room}}</option>
     </select>
   </div>
   <div class="col-md-6 attributes-box" style="padding-top: 1.6%;">
@@ -55,14 +54,8 @@
     To: <input id="timeTo" type="time">
   </div>
   <div class="col-md-12 attributes-box">
-    <select name="cars" multiple>
-      <option value="volvo">Volvo</option>
-      <option value="saab">Saab</option>
-      <option value="opel">Opel</option>
-      <option value="audi">Audi</option>
-      <option value="audi">Audi</option>
-      <option value="audi">Audi</option>
-      <option value="audi">Audi</option>
+    <select name="people" id="people" multiple ngModel>
+      <option *ngFor="let peep of people" [ngValue]=peep.person_id>{{peep.full_name}}</option>
     </select>
   </div>
 </div>

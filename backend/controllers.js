@@ -111,6 +111,22 @@ router.get('/book', (req,res) => {
     }   
 });
 
+router.get('/getrooms', (req, res) => {
+    db.getConnection((err, con) => {
+        con.query('SELECT resource_id, room FROM resources;', (err, result) => {
+            return res.status(200).send(result);
+        });
+    });
+});
+
+router.get('/getpeople', (req, res) => {
+    db.getConnection((err, con) => {
+        con.query('SELECT person_id, full_name FROM people;', (err, result) => {
+            return res.status(200).send(result);
+        });
+    });
+});
+
 router.get('/penis', (req, res) => {
     argon2.hash('password').then(hash => {
         var sql1 = "insert into people (person_id, full_name, email, hashed_password) values (7, 'Peter Svensson', 'peter@kth.se','";

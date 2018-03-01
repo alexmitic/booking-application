@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking, BookingsService, Participants} from '../bookings.service';
+import {Booking, BookingsService, Participants, Person, Room} from '../bookings.service';
 
 @Component({
   selector: 'app-booking-page',
@@ -10,9 +10,13 @@ export class BookingPageComponent implements OnInit {
 
   bookings: Booking[];
   participants: Participants[];
+  rooms: Room[];
+  people: Person[];
   currentBookingId: number;
+  bookingMeeting: boolean;
 
   constructor(private bookingsService: BookingsService) {
+    this.bookingMeeting = false;
     this.bookingsService.reqMeetings().then((data) => {
       this.bookings = data;
     });
@@ -29,6 +33,31 @@ export class BookingPageComponent implements OnInit {
     this.bookingsService.getParticipants(bookingId).then((data) => {
       this.participants = data;
     });
+  }
+
+  public makeBooking() {
+    if (!this.bookingMeeting) {
+      const meetingDisplay = (<HTMLInputElement> document.getElementById('editMeeting'));
+      meetingDisplay.style.visibility = 'visible';
+
+      const button = (<HTMLInputElement> document.getElementById('newMeetingButton'));
+      button.textContent = 'Book';
+
+      this.bookingsService.getRooms().then((data) => {
+        this.rooms = data;
+      });
+
+      this.bookingsService.getpeople().then((data) => {
+        this.people = data;
+      });
+
+      this.bookingMeeting = true;
+    } else {
+      const participants = (<HTMLInputElement> document.getElementById('people'));
+      console.log('Here comes participants' + participants.value);
+
+      let test = from.con
+    }
   }
 
   public deleteBooking() {

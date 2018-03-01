@@ -21,6 +21,12 @@ export class Person {
   }
 }
 
+export class Room {
+  constructor(public resource_id: number,
+              public room: string) {
+  }
+}
+
 @Injectable()
 export class BookingsService {
   public personId: number;
@@ -48,6 +54,24 @@ export class BookingsService {
   public deleteBooking(bookingId): void {
     const URL = 'http://localhost:3000/deletebooking?booking_id=' + bookingId + '&person_id=' + this.personId;
     this.http.delete(URL, { responseType: 'json' }).subscribe((response) => {
+    });
+  }
+
+  public getRooms(): Promise<Room[]> {
+    return new Promise((resolve, reject) => {
+      const URL = 'http://localhost:3000/getrooms';
+      this.http.get(URL, { responseType: 'json' }).subscribe((response) => {
+        resolve(response as Room[]);
+      });
+    });
+  }
+
+  public getpeople(): Promise<Person[]> {
+    return new Promise((resolve, reject) => {
+      const URL = 'http://localhost:3000/getpeople';
+      this.http.get(URL, { responseType: 'json' }).subscribe((response) => {
+        resolve(response as Person[]);
+      });
     });
   }
 }
