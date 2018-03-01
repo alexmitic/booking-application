@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eb527c47-5ead-4e43-a562-758dbfa7ba49" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/booking-page/booking-page.component.ts" afterPath="$PROJECT_DIR$/src/app/booking-page/booking-page.component.ts" />
-    </list>
+    <list default="true" id="eb527c47-5ead-4e43-a562-758dbfa7ba49" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/dist/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -18,11 +16,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="bookings.service.ts" pinned="false" current-in-tab="false">
+      <file leaf-file-name="bookings.service.ts" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/app/bookings.service.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="80" column="28" lean-forward="false" selection-start-line="80" selection-start-column="28" selection-end-line="80" selection-end-column="28" />
+            <state relative-caret-position="388">
+              <caret line="79" column="73" lean-forward="false" selection-start-line="79" selection-start-column="73" selection-end-line="79" selection-end-column="73" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -48,10 +46,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="booking-page.component.ts" pinned="false" current-in-tab="true">
+      <file leaf-file-name="booking-page.component.ts" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/booking-page/booking-page.component.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
+            <state relative-caret-position="568">
               <caret line="92" column="47" lean-forward="false" selection-start-line="92" selection-start-column="47" selection-end-line="92" selection-end-column="47" />
               <folding>
                 <element signature="e#0#59#0" expanded="true" />
@@ -89,8 +87,8 @@
         <option value="$PROJECT_DIR$/src/app/login/login.component.ts" />
         <option value="$PROJECT_DIR$/src/app/booking-page/booking-page.component.css" />
         <option value="$PROJECT_DIR$/src/app/booking-page/booking-page.component.html" />
-        <option value="$PROJECT_DIR$/src/app/bookings.service.ts" />
         <option value="$PROJECT_DIR$/src/app/booking-page/booking-page.component.ts" />
+        <option value="$PROJECT_DIR$/src/app/bookings.service.ts" />
       </list>
     </option>
   </component>
@@ -326,12 +324,12 @@
       <workItem from="1519672438333" duration="5942000" />
       <workItem from="1519724522354" duration="4146000" />
       <workItem from="1519841020384" duration="12555000" />
-      <workItem from="1519892250228" duration="5239000" />
+      <workItem from="1519892250228" duration="5971000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40721000" />
+    <option name="totallyTimeSpent" value="41453000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="695" extended-state="6" />
@@ -812,22 +810,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/bookings.service.ts">
+    <entry file="file://$PROJECT_DIR$/src/app/booking-page/booking-page.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="80" column="28" lean-forward="false" selection-start-line="80" selection-start-column="28" selection-end-line="80" selection-end-column="28" />
+        <state relative-caret-position="568">
+          <caret line="92" column="47" lean-forward="false" selection-start-line="92" selection-start-column="47" selection-end-line="92" selection-end-column="47" />
           <folding>
-            <element signature="e#0#43#0" expanded="true" />
+            <element signature="e#0#59#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/booking-page/booking-page.component.ts">
+    <entry file="file://$PROJECT_DIR$/src/app/bookings.service.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="92" column="47" lean-forward="false" selection-start-line="92" selection-start-column="47" selection-end-line="92" selection-end-column="47" />
+        <state relative-caret-position="388">
+          <caret line="79" column="73" lean-forward="false" selection-start-line="79" selection-start-column="73" selection-end-line="79" selection-end-column="73" />
           <folding>
-            <element signature="e#0#59#0" expanded="true" />
+            <element signature="e#0#43#0" expanded="true" />
           </folding>
         </state>
       </provider>

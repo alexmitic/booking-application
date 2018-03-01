@@ -77,7 +77,7 @@ export class BookingsService {
 
   public book(booking): void {
     const URL = 'http://localhost:3000/book';
-    this.http.post(URL, JSON.stringify(booking), { responseType: 'text' }).subscribe((response) => {
+    this.http.post(URL, JSON.stringify(booking), { responseType: 'text', headers: {'Content-Type' : 'application/json'} }).subscribe((response) => {
       console.log(response);
     });
   }
