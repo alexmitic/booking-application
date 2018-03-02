@@ -19,9 +19,6 @@ values (1, 'It-admin'),
        (3, 'Stadare'),
        (4, 'Testare');
 
---SELECT booking.booking_id, date_of_booking, start_time, end_time FROM booking 
---WHERE made_by = arg_made_by AND date_of_booking = arg_date_of_booking AND start_time >= arg_start_time AND end_time <= arg_end_time 
---UNION SELECT meeting.booking_id, date_of_booking, start_time, end_time FROM meeting INNER JOIN booking ON meeting.booking_id = booking.booking_id WHERE participant = arg_made_by AND date_of_booking = arg_date_of_booking AND start_time >= \'' + req.body.start_time + ':00\' AND end_time <= \'' + req.body.start_time + ':00\';'
 create or REPLACE function denied (arg_resource_id int, arg_date_of_booking date, arg_start_time time, arg_end_time time) 
     returns boolean as $result$
     declare 
@@ -160,31 +157,14 @@ with meeting_teams (meeting_id, team_id) as (
 
 
 -- total cost: look for the sum of the cost of the resources in all bookings
-with meeting_resource(cost) as (
-    select cost from 
-        meeting
-        inner join 
-        resources
-        on 
-        meeting.resource_id = resources.resource_id
-)
-select sum(cost) from meeting_resource;
+select sum(resources.cost*(date_part('hour',end_time)-date_part('hour',start_time))) as room_cost FROM booking
+inner join 
+resources 
+on booking.resource_id = resources.resource_id;
 
 
 -- Get all meetings for a person
-SELECT booking.booking_id, date_of_booking, start_time, end_time, room 
-FROM booking 
-INNER JOIN resources 
-ON booking.resource_id = resources.resource_id 
-WHERE made_by = 1
-UNION
-SELECT meeting.booking_id, date_of_booking, start_time, end_time, room  
-FROM meeting 
-INNER JOIN booking 
-ON meeting.booking_id = booking.booking_id
-INNER JOIN resources 
-ON booking.resource_id = resources.resource_id 
-WHERE participant = 1;
+select * from meeting inner join booking on meeting.booking_id = booking.booking_id where meeting.participant = %user 
 
 
 
