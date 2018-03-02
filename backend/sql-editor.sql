@@ -5,7 +5,8 @@ create table bussines_partners (
     primary key (person_id)
 );
 insert into bussines_partners (person_id, representing, position)
-values (4,'Svantes stål Ab', 'PR ansvarig');
+values (5,'Svantes stål Ab', 'PR ansvarig'),
+       (6,'Svantes stål Ab', 'CEO');
 
 create table staff (
     person_id int not null references people(person_id),
@@ -13,7 +14,10 @@ create table staff (
     primary key (person_id)
 );
 insert into staff (person_id, position) 
-values (1, 'it-admin'), (2, 'Chef'), (3, 'Stadare');
+values (1, 'It-admin'), 
+       (2, 'Testare'), 
+       (3, 'Stadare'),
+       (4, 'Testare');
 
 create table booking (
     booking_id SERIAL,
@@ -24,8 +28,11 @@ create table booking (
     made_by  int not null references people(person_id),
     primary key(booking_id)
 );  
-insert into booking (date_of_booking, start_time ,end_time, resource_id,made_by) 
-values('2018-04-13', '12:16:00','19:13',1,1);
+insert into booking (date_of_booking, start_time ,end_time, resource_id, made_by) 
+values ('2018-04-13', '12:00:00', '13:00', 1, 1),
+       ('2018-04-14', '12:16:00', '14:13', 2, 1),
+       ('2018-04-14', '15:00:00', '16:00', 1, 1),
+       ('2018-04-13', '10:00:00', '11:00', 2, 1);
 
 
 create table meeting (
@@ -33,7 +40,7 @@ create table meeting (
     participant int not null references people(person_id)
 );
 insert into meeting (booking_id, participant) 
-values(1, 4),(1, 1);
+values (1, 4),(1, 1);
 
 
 create table people (
@@ -59,8 +66,8 @@ create table resources (
     primary key(resource_id)
 );
 insert into resources (cost, room ,facility) 
-values (10, 'D32','D-Huset'),
-       (15, 'E45', 'E-Huset');
+values (10, 'D32','Whiteboard'),
+       (15, 'E45', 'TV');
 
 create table teams (
     team_id SERIAL,
@@ -70,7 +77,9 @@ create table teams (
     primary key (team_id)
 );
 insert into teams (team_name, active, accumilated_cost)
-values ('A - team', true,0), ('B - Team', true,0), ('C - Team', false,0);
+values ('A - team', true, 0), 
+       ('B - Team', true, 0), 
+       ('C - Team', false, 0);
 
 create or REPLACE function is_active (id int) 
     returns boolean as $result$
@@ -86,7 +95,7 @@ create table team_member (
     person_id int not null references people (person_id),
     constraint active_team check(is_active(team_id) = true) 
 );
-insert into team_member (team_id, person_id) values (1, 1), (2,2), (2,3);
+insert into team_member (team_id, person_id) values (1, 1), (1, 2), (2, 3), (2, 4);
 
 select cost*date_part('day',date_diff(end_time, start_time)) 
 from booking
@@ -96,10 +105,10 @@ on booking.resource_id = resources.resource_id
 where booking.booking_id = id;  
 
 
---delete team
+-- Delete team a team
 update teams set active = false where teams.team_id = id;
 
---add member to team
+-- Add member to team
 insert into team_member values (team_id, person_id) 
 
 --answer what rooms are available in given timeslot
