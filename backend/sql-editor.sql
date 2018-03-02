@@ -43,8 +43,13 @@ create table people (
     hashed_password text not null,
     primary key(person_id)
 );
-insert into people (full_name, email ,hashed_password) 
-values('gunner svenus','hotmail.se', 'hash'),('hagga svagga','gmail.se', 'hash'), ('Hanus PLanus','gmail.se', 'hash');
+insert into people (full_name, email, hashed_password) 
+values ('Aleksandar Mitic','amitic@kth.se', 'password'),
+       ('Oskar Nehlin','onhelin@kth.se', 'password'),
+       ('Peter Svensson','psven@kth.se', 'password'),
+       ('Anders Dahl','adahl@kth.se', 'password'),
+       ('Anna Book','abook@kth.se', 'password'),
+       ('Hanna Svan','hsvan@kth.se', 'password');
 
 create table resources (
     resource_id serial,
