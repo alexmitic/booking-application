@@ -19,11 +19,11 @@
     <div id="informationBox">
       <div class="row" style="width: 100%; height: 20%">
         <div class="col-md-6">
-          <button class="btn" id="deleteButton" (click)="deleteBooking()">Delete meeting</button>
+          <button class="btn" id="deleteButton" (click)="deleteBooking()">Delete</button>
         </div>
 
         <div class="col-md-6">
-          <button class="btn" (click)="refreshBookings()">Reload</button>
+          <button class="btn" id="refreshButton" (click)="refreshBookings()">Reload</button>
         </div>
       </div>
       <h5 class="text-center" id="participantsTitle">Participants</h5>
@@ -44,7 +44,7 @@
   <div class="col-md-6 attributes-box" style="padding-top: 1.9%;">
     Room:
    <select #selectRoom class="dropdown">
-      <option *ngFor="let room of rooms" [value]="room.room">{{room.room}}</option>
+      <option *ngFor="let room of rooms" [value]="room.room">{{room.room + ' ' + room.cost + ' ' + room.facility}}</option>
     </select>
   </div>
   <div class="col-md-6 attributes-box" style="padding-top: 1.6%;">

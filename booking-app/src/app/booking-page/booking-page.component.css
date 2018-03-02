@@ -102,3 +102,10 @@
   background-color: transparent;
   border: none;
 }
+
+#refreshButton {
+  background-color: transparent;
+  border: 1px solid black;
+  margin-left: 15%;
+  width: 100%;
+}

@@ -21,6 +21,10 @@ export class BookingPageComponent implements OnInit {
     this.bookingMeeting = false;
     this.bookingsService.reqMeetings().then((data) => {
       this.bookings = data;
+      for (let i = 0; i < this.bookings.length; i++) {
+        const temp = new Date(this.bookings[i].date);
+        this.bookings[i].date = temp.toLocaleDateString();
+      }
     });
   }
 
@@ -91,6 +95,12 @@ export class BookingPageComponent implements OnInit {
       };
 
       this.bookingsService.book(bookingObject);
+
+      const meetingDisplay = (<HTMLInputElement> document.getElementById('editMeeting'));
+      meetingDisplay.style.visibility = 'hidden';
+
+      const button = (<HTMLInputElement> document.getElementById('newMeetingButton'));
+      button.textContent = 'Book meeting';
     }
   }
 
@@ -101,8 +111,10 @@ export class BookingPageComponent implements OnInit {
   public refreshBookings() {
     this.bookingsService.reqMeetings().then((data) => {
       this.bookings = data;
-      console.log(this.bookings);
+      for (let i = 0; i < this.bookings.length; i++) {
+        const temp = new Date(this.bookings[i].date);
+        this.bookings[i].date = temp.toLocaleDateString();
+      }
     });
   }
-
 }
