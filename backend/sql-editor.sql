@@ -15,6 +15,19 @@ create table staff (
 insert into staff (person_id, position) 
 values (1, 'it-admin'), (2, 'Chef'), (3, 'Stadare');
 
+--SELECT booking.booking_id, date_of_booking, start_time, end_time FROM booking 
+--WHERE made_by = arg_made_by AND date_of_booking = arg_date_of_booking AND start_time >= arg_start_time AND end_time <= arg_end_time 
+--UNION SELECT meeting.booking_id, date_of_booking, start_time, end_time FROM meeting INNER JOIN booking ON meeting.booking_id = booking.booking_id WHERE participant = arg_made_by AND date_of_booking = arg_date_of_booking AND start_time >= \'' + req.body.start_time + ':00\' AND end_time <= \'' + req.body.start_time + ':00\';'
+create or REPLACE function denied (arg_resource_id int, arg_date_of_booking date, arg_start_time time, arg_end_time time) 
+    returns boolean as $result$
+    declare 
+    result boolean;
+    begin 
+    select exists(select booking.resource_id from booking where ((start_time <= arg_start_time) and arg_start_time <= end_time)  or ((start_time <= arg_end_time) and arg_end_time <= end_time) 
+        and date_of_booking = arg_date_of_booking and booking.resource_id = arg_resource_id) into result;
+    return result; 
+    end;
+$result$ LANGUAGE plpgsql;
 create table booking (
     booking_id SERIAL,
     date_of_booking date not null check(current_date <= date_of_booking), 
@@ -22,11 +35,12 @@ create table booking (
     end_time time not null check (start_time < end_time),
     resource_id int not null references resources(resource_id), 
     made_by  int not null references people(person_id),
+    constraint is_denied check(denied(resource_id,date_of_booking,start_time, end_time) = false),
     primary key(booking_id)
 );  
 insert into booking (date_of_booking, start_time ,end_time, resource_id,made_by) 
 values('2018-04-13', '12:16:00','19:13',1,1);
-
+('2018-04-13', '11:16:00','12:13',2,1)
 
 create table meeting (
     booking_id int not null references booking(booking_id),
@@ -107,24 +121,18 @@ with available (resource_id) as (
     select booking.resource_id from  
         booking
         where ((start_time > '08:00:00') and start_time > ('11:00:00'))  or '08:00:00' > end_time
+        and date_of_booking = date
 )
 select available.resource_id, resources.room from (available inner join resources on available.resource_id = resources.resource_id);
 
 --Present occupation lists for all rooms on a given date
-with available (room, resource_id) as (
-    select room, resources.resource_id from 
-        meeting
-        inner join 
-        resources
-        on 
-        meeting.resource_id = resources.resource_id
-        inner join
+with available (resource_id) as (
+    select booking.resource_id from  
         booking
-        on 
-        meeting.booking_id = booking.booking_id
-        where dayofyear(start_time) != dayofyear(date) and dayofyear(end_time) != dayofyear(date)
+        where date_of_booking = date
 )
-select * from available;
+select available.resource_id, resources.room from (available inner join resources on available.resource_id = resources.resource_id);
+
 
 --Show which users have booked which meetings
 select people.full_name, meeting_id from meeting inner join people on made_by = person_id;
