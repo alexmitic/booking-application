@@ -30,10 +30,10 @@ values('2018-04-13', '12:16:00','19:13',1,1);
 
 create table meeting (
     booking_id int not null references booking(booking_id),
-    participant int not null references people(person_id),
+    participant int not null references people(person_id)
 );
-insert into meeting (booking_id, participant ,total_cost) 
-values(1, 5,100),(2, 1, 300);
+insert into meeting (booking_id, participant) 
+values(1, 4),(1, 1);
 
 
 create table people (
@@ -87,14 +87,14 @@ from booking
 inner join
 resources 
 on booking.resource_id = resources.resource_id
-where booking.booking_id = id;
+where booking.booking_id = id;  
 
 
 --delete team
 update teams set active = false where teams.team_id = id;
 
 --add member to team
-insert into team_member (team_id, person_id) 
+insert into team_member values (team_id, person_id) 
 
 --answer what rooms are available in given timeslot
 with available (resource_id, room) as (
