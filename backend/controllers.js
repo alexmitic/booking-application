@@ -17,7 +17,6 @@ router.get('/login', (req, res) => {
     db.getConnection((err, con) => {
         con.query(sql, function (err, result) {
             if (err) throw err;
-
             if (result.length !== 0) {
                 argon2.verify(result[0].hashed_password,req.query.password).then (match => {
                     con.release()
@@ -71,7 +70,8 @@ router.delete('/deletebooking', (req, res) => {
     console.log('Im here');
 
     db.getConnection((err, connction) => {
-        const deleteBookingSQL = 'DELETE FROM booking WHERE booking_id = ' + req.query.booking_id + ' AND made_by = ' + req.query.person_id + ';';
+        const deleteBookingSQL = 'DELETE FROM booking WHERE booking_id = ' + req.query.booking_id + ' AND made_by = ' + req.query.person_id + 
+        'AND start_time > current_timestamp;';
         connction.query(deleteBookingSQL, (err, participants) => {
             connction.release()
         });
@@ -88,8 +88,25 @@ router.delete('/deletebooking', (req, res) => {
 });
 
 router.get('/book', (req,res) => {
+    var reqJson = JSON.parse(req);
+    //check if valid 
+    db.getConnection((err,connection) => {
+        const alreadyBooked = 'exists(select booking_id from booking where booking.date_of_booking = ' + reqJson.date_of_booking 
+        + 'and (booking.start_time > ' + reqJson.start_time + 'or booking.end_time < '+ reqJson.end_time 
+        +') and booking.resource_id != '+reqJson.resource_id +');'
+        connection.query(alreadyBooked, (err, result) => {
+            if(result[0] == true){
+                //valid
+                var total_cost
+                
+            }else {
+                connection.release();
+                return res.status(200).send("ALREADY BOOKED")
+            }
+        });
+    });
     //first create booking
-    var bookingSql = "insert into booking  (start_time, end_time) values ('"
+    var bookingSql = "insert into booking (start_time, end_time) values ('"
     .concat(req.query.start_date).concat("','").concat(req.query.end_date).concat("');");
     var bookingId = null;
     db.query(bookingSql, function(err, result) {

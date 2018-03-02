@@ -1,12 +1,12 @@
 create table bussines_partners (
-    person_id int serial, 
+    person_id int not null references people(person_id), 
     representing text not null,
     position text not null,
     primary key (person_id)
 );
 
 create table staff (
-    person_id serial,
+    person_id int not null references people(person_id),
     position text not null,
     primary key (person_id)
 );
@@ -16,15 +16,23 @@ create table booking (
     date_of_booking date not null, 
     start_time time not null,
     end_time time not null,
-    resource_id int not null,
-    made_by int not null,
+    resource_id int not null references resources(resource_id), 
+    made_by  int not null references people(person_id),
+    constraint test check(start_time = end_time),
     primary key(booking_id)
-);
+);  
+insert into booking (date_of_booking, start_time ,end_time, resource_id,made_by) 
+values('2018-04-13', '12:16:00','09:13:00',5,5);
+
 
 create table meeting (
-    booking_id int not null,
-    participant int not null
+    booking_id int not null references booking(booking_id),
+    participant int not null references people(person_id),
+    total_cost real not null
 );
+insert into meeting (booking_id, participant ,total_cost) 
+values(10, 'testroom','skogen'),(15, 'nyttromm', 'huset');
+
 
 create table people (
     person_id serial,
@@ -33,6 +41,8 @@ create table people (
     hashed_password text not null,
     primary key(person_id)
 );
+insert into people (full_name, email ,hashed_password) 
+values('gunner svenus','hotmail.se', 'hash'),('hagga svagga','gmail.se', 'hash');
 
 create table resources (
     resource_id serial,
@@ -41,6 +51,8 @@ create table resources (
     facility text not null,
     primary key(resource_id)
 );
+insert into resources (cost, room ,facility) 
+values(10, 'testroom','skogen'),(15, 'nyttromm', 'huset');
 
 create table teams (
     team_id SERIAL,
@@ -49,10 +61,44 @@ create table teams (
     primary key (team_id)
 );
 
+select cost*date_part('day',date_diff(end_time, start_time)) 
+from booking
+inner join
+resources 
+on booking.resource_id = resources.resource_id
+where booking.booking_id = id;
+
+CREATE OR REPLACE FUNCTION check_if_outpatient (id int)
+RETURNS boolean AS $result$
+declare
+result boolean;
+BEGIN
+SELECT EXISTS(select patient_id from outpatients where id =
+outpatients.patient_id)
+RETURN result;
+END;
+create or replace function is_active (id int) 
+    returns boolean as $result$
+    declare 
+    result boolean;
+    begin 
+    select exists(select team_id from teams where teams.active = true and teams.team_id = id) into result;
+    return result; 
+    end;
+$result$ LANGUAGE plpgsql;
 create table team_member (
     team_id int not null,
-    person_id int not null
+    person_id int not null references people (person_id),
+    constraint active_team check(is_active(team_id) = true) 
 );
+
+
+
+--delete team
+update teams set active = false where teams.team_id = id;
+
+--add member to team
+insert into team_member (team_id, person_id) 
 
 --answer what rooms are available in given timeslot
 with available (resource_id, room) as (
@@ -128,3 +174,4 @@ ON meeting.booking_id = booking.booking_id
 INNER JOIN resources 
 ON booking.resource_id = resources.resource_id 
 WHERE participant = 1;
+
