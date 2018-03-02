@@ -42,18 +42,12 @@ create table booking (
     constraint is_denied check(denied(resource_id,date_of_booking,start_time, end_time) = false),
     primary key(booking_id)
 );  
-<<<<<<< HEAD
-insert into booking (date_of_booking, start_time ,end_time, resource_id,made_by) 
-values('2018-04-13', '12:16:00','19:13',1,1);
-('2018-04-13', '11:16:00','12:13',2,1)
-=======
 insert into booking (date_of_booking, start_time ,end_time, resource_id, made_by) 
 values ('2018-04-13', '12:00:00', '13:00', 1, 1),
        ('2018-04-14', '12:16:00', '14:13', 2, 1),
        ('2018-04-14', '15:00:00', '16:00', 1, 1),
        ('2018-04-13', '10:00:00', '11:00', 2, 1);
 
->>>>>>> 7f60e537296a2cb6121fd90a1cc7c3e234a878bc
 
 create table meeting (
     booking_id int not null references booking(booking_id),
@@ -192,3 +186,13 @@ INNER JOIN resources
 ON booking.resource_id = resources.resource_id 
 WHERE participant = 1;
 
+
+
+update teams 
+set accumilated_cost = accumilated_cost + room_cost::int
+from 
+(select (resources.cost*(date_part('hour',end_time)-date_part('hour',start_time))) as room_cost, made_by FROM booking
+inner join 
+resources 
+on booking.resource_id = resources.resource_id) as temp
+where teams.team_id = (select team_member.team_id from team_member inner join teams on person_id = temp.made_by and teams.active = true);
