@@ -43,8 +43,8 @@
   </div>
   <div class="col-md-6 attributes-box" style="padding-top: 1.9%;">
     Room:
-   <select class="dropdown" id="room">
-      <option *ngFor="let room of rooms" value={{room.room}}>{{room.room}}</option>
+   <select #selectRoom class="dropdown">
+      <option *ngFor="let room of rooms" [value]="room.room">{{room.room}}</option>
     </select>
   </div>
   <div class="col-md-6 attributes-box" style="padding-top: 1.6%;">
@@ -54,8 +54,8 @@
     To: <input id="timeTo" type="time">
   </div>
   <div class="col-md-12 attributes-box">
-    <select name="people" id="people" multiple ngModel>
-      <option *ngFor="let peep of people" [ngValue]=peep.person_id>{{peep.full_name}}</option>
+    <select #select name="people" multiple>
+    <option *ngFor="let peep of people" [value]="peep.person_id">{{peep.full_name}}</option>
     </select>
   </div>
 </div>
