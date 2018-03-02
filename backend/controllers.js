@@ -33,9 +33,10 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/getbookings', (req, res) => {
+
     let respons = [];
     
-    const allPersonBookingsSQL = 'SELECT booking.booking_id, date_of_booking, start_time, end_time, room FROM booking INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE made_by = ' + req.query.person_id + ' UNION SELECT meeting.booking_id, date_of_booking, start_time, end_time, room FROM meeting INNER JOIN booking ON meeting.booking_id = booking.booking_id INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE participant = ' + req.query.person_id + ';';
+    const allPersonBookingsSQL = 'SELECT booking.booking_id, date_of_booking::date, start_time, end_time, room FROM booking INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE made_by = ' + req.query.person_id + ' UNION SELECT meeting.booking_id, date_of_booking, start_time, end_time, room FROM meeting INNER JOIN booking ON meeting.booking_id = booking.booking_id INNER JOIN resources ON booking.resource_id = resources.resource_id WHERE participant = ' + req.query.person_id + ';';
 
     db.query(allPersonBookingsSQL, (err, bookings) => {
         for (let i = 0; i < bookings.rows.length; i++) {
@@ -47,6 +48,7 @@ router.get('/getbookings', (req, res) => {
                 room: bookings.rows[i].room
             });  
         }
+        console.log(respons);
         return res.status(200).send(respons);
     });
 });
@@ -81,11 +83,41 @@ router.post('/book', (req,res) => {
     console.log(req.body.participants);
     console.log(req.body.resource_id);
 
-    return res.status(200).send('Done');
+    const getMeetingsSql = 'SELECT booking.booking_id, date_of_booking, start_time, end_time FROM booking WHERE made_by = ' + req.body.made_by + ' AND date_of_booking = \'' + req.body.date + '\' AND start_time >= \'' + req.body.start_time + ':00\' AND end_time <= \'' + req.body.end_time + ':00\' UNION SELECT meeting.booking_id, date_of_booking, start_time, end_time FROM meeting INNER JOIN booking ON meeting.booking_id = booking.booking_id WHERE participant = ' + req.body.made_by + ' AND date_of_booking = \'' + req.body.date + '\' AND start_time >= \'' + req.body.start_time + ':00\' AND end_time <= \'' + req.body.start_time + ':00\';';
+
+    console.log(getMeetingsSql);
+
+    db.query(getMeetingsSql, (err, result) => {
+        if (result.rows.length != 0) {
+            return res.status(200).send('No booking');            
+        } else {
+            const bookSql = 'INSERT INTO booking (date_of_booking, start_time, end_time, resource_id, made_by) VALUES (\'' + req.body.date + '\'::date, \'' + req.body.start_time + '\', \'' + req.body.end_time + '\', ' + req.body.resource_id + ', ' + req.body.made_by + ') RETURNING booking_id;';  
+            db.query(bookSql, (err, booked) => {
+                let addParticiapantsSql = 'INSERT INTO meeting VALUES ';
+
+                if (!req.body.participants.length == 0) {
+                    addParticiapantsSql = addParticiapantsSql + '(' + booked.rows[0].booking_id + ', ' + req.body.participants[0] + ')';
+
+                    for (let i = 1; i < req.body.participants.length; i++) {
+                        addParticiapantsSql = addParticiapantsSql + ', (' + booked.rows[0].booking_id + ', ' + req.body.participants[i] + ')';
+                    }    
+                    addParticiapantsSql = addParticiapantsSql + ';';
+
+                    console.log('Adding parts: ' + addParticiapantsSql);
+
+                    db.query(addParticiapantsSql, (err, addedParts) => {
+                        return res.status(200).send('Booking');            
+                    });
+                } else {
+                    return res.status(200).send('Booking');            
+                }
+            });
+        }
+    });
 });
 
 router.get('/getrooms', (req, res) => {
-    db.query('SELECT resource_id, room FROM resources;', (err, result) => {
+    db.query('SELECT resource_id, room, cost, facility FROM resources;', (err, result) => {
         return res.status(200).send(result.rows);
     });
 });

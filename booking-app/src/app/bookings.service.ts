@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 export class Booking {
-  constructor(booking_id: number,
-              date: string,
-              from: string,
-              to: string,
-              room: string) {
+  constructor(public booking_id: number,
+              public date: string,
+              public from: string,
+              public to: string,
+              public room: string) {
   }
 }
 
@@ -23,7 +23,9 @@ export class Person {
 
 export class Room {
   constructor(public resource_id: number,
-              public room: string) {
+              public room: string,
+              public cost: number,
+              public facility: string) {
   }
 }
 
