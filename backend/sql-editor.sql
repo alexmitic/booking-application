@@ -24,7 +24,7 @@ create or REPLACE function denied (arg_resource_id int, arg_date_of_booking date
     declare 
     result boolean;
     begin 
-    select exists(select booking.resource_id from booking where date_of_booking = arg_date_of_booking and booking.resource_id = arg_resource_id and (((start_time <= arg_start_time) and arg_start_time <= end_time) or ((start_time <= arg_end_time) and arg_end_time <= end_time))) into result;
+    select exists(select booking.resource_id from booking where date_of_booking = arg_date_of_booking and booking.resource_id = arg_resource_id and (((start_time <= arg_start_time) and arg_start_time <= end_time) or ((start_time <= arg_end_time) and arg_end_time <= end_time) or (('10:00' <= start_time) and  end_time <= '12:00'))) into result;
     return result; 
     end;
 $result$ LANGUAGE plpgsql;
@@ -145,15 +145,20 @@ select people.full_name, meeting_id from meeting inner join people on made_by = 
 
 
 --Show cost accrued by teams for any given time interval.
-with meeting_teams (meeting_id, team_id) as (
-    select meeting_id,team_id from 
-    meeting 
-    inner join
-    team_member
-    on 
-    meeeting.made_by = team_member.person_id
-    --måste testas mer svårt att se utan att veta hur den här hade fungerat
+with room_costs (team_id, cost) as (
+    select teams.team_id, room_cost from 
+    (select (resources.cost*(date_part('hour',end_time)-date_part('hour',start_time))) as room_cost, made_by, date_of_booking, start_time, end_time FROM booking
+    inner join 
+    resources 
+    on booking.resource_id = resources.resource_id) as temp
+    inner join 
+    teams
+    on
+    teams.team_id = (select team_member.team_id from team_member inner join teams on person_id = temp.made_by and teams.active = true)
+    where date_of_booking = '2018-04-14' and (((start_time <= '10:00') and '10:00' <= end_time) or ((start_time <= '12:00') and '12:00' <= end_time) or (('10:00' <= start_time) and  end_time <= '12:00'))
 )
+select sum(cost) from room_costs group by team_id;
+
 
 
 -- total cost: look for the sum of the cost of the resources in all bookings
