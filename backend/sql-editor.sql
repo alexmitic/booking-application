@@ -112,20 +112,12 @@ update teams set active = false where teams.team_id = id;
 insert into team_member values (team_id, person_id) 
 
 --answer what rooms are available in given timeslot
-with available (resource_id, room) as (
-    select resources.resource_id, room from 
-        meeting
-        inner join 
-        resources
-        on 
-        meeting.resource_id = resources.resource_id
-        inner join 
+with available (resource_id) as (
+    select booking.resource_id from  
         booking
-        on 
-        meeting_resource.booking_id = booking.booking_id
-        where start_time > "my time" or "my time" > end_time
+        where ((start_time > '08:00:00') and start_time > ('11:00:00'))  or '08:00:00' > end_time
 )
-select resources.resource_id, resources.room from available right join resources on available.resource_id = resources.resource_id;
+select available.resource_id, resources.room from (available inner join resources on available.resource_id = resources.resource_id);
 
 --Present occupation lists for all rooms on a given date
 with available (room, resource_id) as (
