@@ -24,11 +24,11 @@ create or REPLACE function denied (arg_resource_id int, arg_date_of_booking date
     declare 
     result boolean;
     begin 
-    select exists(select booking.resource_id from booking where ((start_time <= arg_start_time) and arg_start_time <= end_time)  or ((start_time <= arg_end_time) and arg_end_time <= end_time) 
-        and date_of_booking = arg_date_of_booking and booking.resource_id = arg_resource_id) into result;
+    select exists(select booking.resource_id from booking where date_of_booking = arg_date_of_booking and booking.resource_id = arg_resource_id and (((start_time <= arg_start_time) and arg_start_time <= end_time) or ((start_time <= arg_end_time) and arg_end_time <= end_time))) into result;
     return result; 
     end;
 $result$ LANGUAGE plpgsql;
+
 create table booking (
     booking_id SERIAL,
     date_of_booking date not null check(current_date <= date_of_booking), 
@@ -39,12 +39,12 @@ create table booking (
     constraint is_denied check(denied(resource_id,date_of_booking,start_time, end_time) = false),
     primary key(booking_id)
 );  
+
 insert into booking (date_of_booking, start_time ,end_time, resource_id, made_by) 
 values ('2018-04-13', '12:00:00', '13:00', 1, 1),
        ('2018-04-14', '12:16:00', '14:13', 2, 1),
        ('2018-04-14', '15:00:00', '16:00', 1, 1),
        ('2018-04-13', '10:00:00', '11:00', 2, 1);
-
 
 create table meeting (
     booking_id int not null references booking(booking_id),
