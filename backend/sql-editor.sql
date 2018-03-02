@@ -4,34 +4,36 @@ create table bussines_partners (
     position text not null,
     primary key (person_id)
 );
+insert into bussines_partners (person_id, representing, position)
+values (4,'Svantes stål Ab', 'PR ansvarig');
 
 create table staff (
     person_id int not null references people(person_id),
     position text not null,
     primary key (person_id)
 );
+insert into staff (person_id, position) 
+values (1, 'it-admin'), (2, 'Chef'), (3, 'Stadare');
 
 create table booking (
     booking_id SERIAL,
-    date_of_booking date not null, 
+    date_of_booking date not null check(current_date <= date_of_booking), 
     start_time time not null,
-    end_time time not null,
+    end_time time not null check (start_time < end_time),
     resource_id int not null references resources(resource_id), 
     made_by  int not null references people(person_id),
-    constraint test check(start_time = end_time),
     primary key(booking_id)
 );  
 insert into booking (date_of_booking, start_time ,end_time, resource_id,made_by) 
-values('2018-04-13', '12:16:00','09:13:00',5,5);
+values('2018-04-13', '12:16:00','19:13',1,1);
 
 
 create table meeting (
     booking_id int not null references booking(booking_id),
     participant int not null references people(person_id),
-    total_cost real not null
 );
 insert into meeting (booking_id, participant ,total_cost) 
-values(10, 'testroom','skogen'),(15, 'nyttromm', 'huset');
+values(1, 5,100),(2, 1, 300);
 
 
 create table people (
@@ -42,11 +44,11 @@ create table people (
     primary key(person_id)
 );
 insert into people (full_name, email ,hashed_password) 
-values('gunner svenus','hotmail.se', 'hash'),('hagga svagga','gmail.se', 'hash');
+values('gunner svenus','hotmail.se', 'hash'),('hagga svagga','gmail.se', 'hash'), ('Hanus PLanus','gmail.se', 'hash');
 
 create table resources (
     resource_id serial,
-    cost real not null,
+    cost real not null check(cost > 0),
     room text not null,
     facility text not null,
     primary key(resource_id)
@@ -58,26 +60,13 @@ create table teams (
     team_id SERIAL,
     team_name text not null,
     active boolean not null,
+    accumilated_cost real not null,
     primary key (team_id)
 );
+insert into teams (team_name, active, accumilated_cost)
+values ('A - team', true,0), ('B - Team', true,0), ('C - Team', false,0);
 
-select cost*date_part('day',date_diff(end_time, start_time)) 
-from booking
-inner join
-resources 
-on booking.resource_id = resources.resource_id
-where booking.booking_id = id;
-
-CREATE OR REPLACE FUNCTION check_if_outpatient (id int)
-RETURNS boolean AS $result$
-declare
-result boolean;
-BEGIN
-SELECT EXISTS(select patient_id from outpatients where id =
-outpatients.patient_id)
-RETURN result;
-END;
-create or replace function is_active (id int) 
+create or REPLACE function is_active (id int) 
     returns boolean as $result$
     declare 
     result boolean;
@@ -87,11 +76,18 @@ create or replace function is_active (id int)
     end;
 $result$ LANGUAGE plpgsql;
 create table team_member (
-    team_id int not null,
+    team_id int not null references teams(team_id),
     person_id int not null references people (person_id),
     constraint active_team check(is_active(team_id) = true) 
 );
+insert into team_member (team_id, person_id) values (1, 1), (2,2), (2,3);
 
+select cost*date_part('day',date_diff(end_time, start_time)) 
+from booking
+inner join
+resources 
+on booking.resource_id = resources.resource_id
+where booking.booking_id = id;
 
 
 --delete team
