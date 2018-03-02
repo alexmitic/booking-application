@@ -184,4 +184,19 @@ INNER JOIN booking
 ON meeting.booking_id = booking.booking_id
 INNER JOIN resources 
 ON booking.resource_id = resources.resource_id 
+<<<<<<< HEAD
 WHERE participant = 1;
+=======
+WHERE participant = 1;
+
+
+
+update teams 
+set accumilated_cost = accumilated_cost + room_cost::int
+from 
+(select (resources.cost*(date_part('hour',end_time)-date_part('hour',start_time))) as room_cost, made_by FROM booking
+inner join 
+resources 
+on booking.resource_id = resources.resource_id) as temp
+where teams.team_id = (select team_member.team_id from team_member inner join teams on person_id = temp.made_by and teams.active = true);
+>>>>>>> 482660e48ebde439978e0a7047601773d6f563b5
