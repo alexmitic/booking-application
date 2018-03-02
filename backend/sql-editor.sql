@@ -132,12 +132,12 @@ with available (resource_id) as (
 select available.resource_id, resources.room from (available inner join resources on available.resource_id = resources.resource_id);
 
 --Present occupation lists for all rooms on a given date
-with available (resource_id) as (
-    select booking.resource_id from  
+with available (resource_id, start_time, end_time) as (
+    select booking.resource_id, start_time, end_time from  
         booking
-        where date_of_booking = date
+        where date_of_booking = '2018-04-12' --%date
 )
-select available.resource_id, resources.room from (available inner join resources on available.resource_id = resources.resource_id);
+select available.resource_id, resources.room, start_time, end_time from (available inner join resources on available.resource_id = resources.resource_id)
 
 
 --Show which users have booked which meetings
@@ -171,7 +171,10 @@ on booking.resource_id = resources.resource_id;
 -- Get all meetings for a person
 select * from meeting inner join booking on meeting.booking_id = booking.booking_id where meeting.participant = %user 
 
+--get participants of meeting
+select * from meeting inner join people on meeting.participant = people.person_id where meeting.booking_id = %id 
 
+--
 
 update teams 
 set accumilated_cost = accumilated_cost + room_cost::int
