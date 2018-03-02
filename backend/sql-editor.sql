@@ -59,7 +59,8 @@ create table resources (
     primary key(resource_id)
 );
 insert into resources (cost, room ,facility) 
-values(10, 'testroom','skogen'),(15, 'nyttromm', 'huset');
+values (10, 'D32','D-Huset'),
+       (15, 'E45', 'E-Huset');
 
 create table teams (
     team_id SERIAL,

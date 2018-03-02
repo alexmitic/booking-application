@@ -19,7 +19,7 @@ router.get('/login', (req, res) => {
         if (err) throw err;
 
         if (result.rows.length !== 0) {
-            if(result.rows[0].hashed_password == req.body.password){
+            if(result.rows[0].hashed_password.e === req.body.password){
                 return res.status(200).send(result.rows[0]);
             } else {
                 return res.status(200).send("FAIL");
